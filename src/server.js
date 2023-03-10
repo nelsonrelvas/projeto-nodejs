@@ -24,6 +24,7 @@ app.get('/oi', (request, response) => {
 
 
 app.post('/userdata', (request, response) => {
+    console.log('iniciando');
     console.log(request.query);
     console.log(request.route);
     console.log(request.header);
@@ -35,6 +36,7 @@ app.post('/userdata', (request, response) => {
     console.log(request.body.idade);
     // response.send('ok')  //status ok
     response.status(200).json({ sucess: true });
+    console.log('finalizando');
 })
 
 
