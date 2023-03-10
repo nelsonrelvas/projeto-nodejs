@@ -15,25 +15,33 @@ app.use(express.json());
 
 app.get('/', (request, response) => {
     // response.send('Vocẽ acessou o servidor');
-    response.json({ nome: 'Nelson', sobrenome: 'Relvas', idade: 27 });
+    response.json({ nome: 'Nelson', sobrenome: 'Relvas', idade: 37 });
 })
 
-app.get('/oi', (request, response) => {
-    response.send('oi - Vocẽ acessou o servidor');
+app.get('/users', (request, response) => {
+    // response.send('Vocẽ acessou o servidor');
+    console.log('iniciando1');
+    response.json([{ nome: 'Nelson', sobrenome: 'Relvas', idade: 37 },
+    { nome: 'Maria', sobrenome: 'Relvas', idade: 60 },
+    { nome: 'Tamires', sobrenome: 'Relvas', idade: 35 }]);
+    console.log('finalizando');
 })
 
 
-app.post('/userdata', (request, response) => {
+
+app.post('/userdata/:id/:email', (request, response) => {
     console.log('iniciando');
-    console.log(request.query);
-    console.log(request.route);
-    console.log(request.header);
-    console.log(request.params);
+    // console.log(request.query);
+    // console.log(request.route);
+    // console.log(request.header);
+    console.log(request.params);                    //route params
+    console.log('parametro', request.params.id);
+    console.log('parametro', request.params.email);
 
-    console.log(request.body);
-    console.log(request.body.nome);
-    console.log(request.body.sobrenome);
-    console.log(request.body.idade);
+    // console.log(request.body);
+    // console.log(request.body.nome);
+    // console.log(request.body.sobrenome);
+    // console.log(request.body.idade);
     // response.send('ok')  //status ok
     response.status(200).json({ sucess: true });
     console.log('finalizando');
