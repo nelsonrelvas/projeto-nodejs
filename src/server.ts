@@ -49,10 +49,9 @@ app.get('/create-user', (request, response) => {
 
 app.post('/user/sign-in', (request, response) => {
     const { email, password } = request.body;
-    console.log(email, password);
     pool.getConnection((err: any, connection: any) => {
         connection.query(
-            'SELECT password FROM users WHERE email=?',
+            'SELECT * FROM users WHERE email=?',
             [email],
             (error: any, result: any, fields: any) => {
                 connection.release();
@@ -63,11 +62,8 @@ app.post('/user/sign-in', (request, response) => {
                     if (!result[0]) {
                         return response.status(400).json({ error: "Erro na sua autenticação (email não existe)!" });
                     } else {
-                        //TODO verifica senha bate
-                        const passwordDb = result[0].password;
-                        console.log('resultado passwordDb', passwordDb);
-
-                        compare(password, passwordDb, (erroCompare: any, resultCompare: any) => {
+                        //verifica se a senha bate
+                        compare(password, result[0].password, (erroCompare: any, resultCompare: any) => {
                             if (erroCompare) {
                                 return response.status(500).json(err);
                             } else {
@@ -77,9 +73,6 @@ app.post('/user/sign-in', (request, response) => {
                                         id: result[0].user_id,
                                         email: result[0].email
                                     }, "segredo", { expiresIn: "1d" });
-
-                                    console.log('token', token);
-
                                     return response.status(200).json({ token: token });
                                 } else {
                                     return response.status(400).json({ error: "Erro na sua autenticação (senha incorreta)!" });
