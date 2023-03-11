@@ -33,6 +33,7 @@ app.get('/create-user', (request, response) => {
                 'INSERT INTO users (user_id, name, email, password) VALUES (?,?,?,?)',
                 [idGenerated, name, email, passwordHash],
                 (error: any, result: any, fields: any) => {
+                    connection.release();
                     if (error) {
                         response.status(400).json(error);
                     } else {
