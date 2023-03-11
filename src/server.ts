@@ -1,7 +1,8 @@
 import express from 'express';
 import { pool } from './mysql';
 import { v4 as uuidv4 } from 'uuid'
-import { hash } from 'bcrypt'
+import { hash, compare } from 'bcrypt'
+import { sign } from 'jsonwebtoken'
 
 const app = express();
 app.use(express.json());
@@ -43,32 +44,54 @@ app.get('/create-user', (request, response) => {
             );
         });
     })
+});
+
+
+app.post('/user/sign-in', (request, response) => {
+    const { email, password } = request.body;
+    console.log(email, password);
+    pool.getConnection((err: any, connection: any) => {
+        connection.query(
+            'SELECT password FROM users WHERE email=?',
+            [email],
+            (error: any, result: any, fields: any) => {
+                connection.release();
+
+                if (error) {
+                    return response.status(500).json(err);
+                } else {
+                    if (!result[0]) {
+                        return response.status(400).json({ error: "Erro na sua autenticação (email não existe)!" });
+                    } else {
+                        //TODO verifica senha bate
+                        const passwordDb = result[0].password;
+                        console.log('resultado passwordDb', passwordDb);
+
+                        compare(password, passwordDb, (erroCompare: any, resultCompare: any) => {
+                            if (erroCompare) {
+                                return response.status(500).json(err);
+                            } else {
+                                if (resultCompare) {
+                                    //json web token
+                                    const token = sign({
+                                        id: result[0].user_id,
+                                        email: result[0].email
+                                    }, "segredo", { expiresIn: "1d" });
+
+                                    console.log('token', token);
+
+                                    return response.status(200).json({ token: token });
+                                } else {
+                                    return response.status(400).json({ error: "Erro na sua autenticação (senha incorreta)!" });
+                                }
+                            }
+                        });
+                    }
+
+                }
+            }
+        );
+    })
 })
-
-app.get('/users', (request, response) => {
-    console.log('iniciando1');
-    response.json([{ nome: 'Nelson', sobrenome: 'Relvas', idade: 37 },
-    { nome: 'Maria', sobrenome: 'Relvas', idade: 60 },
-    { nome: 'Tamires', sobrenome: 'Relvas', idade: 35 }]);
-    console.log('finalizando');
-})
-
-
-
-app.post('/userdata/:id/:email', (request, response) => {
-    console.log(request.query);
-
-    console.log('-------------------------------');
-    console.log(request.headers);
-    console.log(request.headers.authorization);
-    console.log('-------------------------------');
-
-    console.log(request.params);                    //route params
-    console.log('parametro', request.params.id);
-    console.log('parametro', request.params.email);
-
-    response.status(200).json({ sucess: true });
-})
-
 
 app.listen(4000);
