@@ -1,5 +1,6 @@
-// criar nosso servidor e alguma rotas (a aplicação vai nascer a partir desse arquivo
-const express = require('express');
+
+import express from 'express'
+
 const app = express();
 
 //resolver possíveis problemas no json, senao n recebe json
@@ -30,10 +31,15 @@ app.get('/users', (request, response) => {
 
 
 app.post('/userdata/:id/:email', (request, response) => {
-    console.log('iniciando');
-    // console.log(request.query);
+    console.log('iniciando 222');
+    console.log(request.query);
     // console.log(request.route);
-    // console.log(request.header);
+
+    console.log('-------------------------------');
+    console.log(request.headers);
+    console.log(request.headers.authorization);
+    console.log('-------------------------------');
+
     console.log(request.params);                    //route params
     console.log('parametro', request.params.id);
     console.log('parametro', request.params.email);
@@ -44,7 +50,7 @@ app.post('/userdata/:id/:email', (request, response) => {
     // console.log(request.body.idade);
     // response.send('ok')  //status ok
     response.status(200).json({ sucess: true });
-    console.log('finalizando');
+    console.log('finalizando 222');
 })
 
 
