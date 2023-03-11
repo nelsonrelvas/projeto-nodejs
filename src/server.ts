@@ -7,17 +7,8 @@ import { sign } from 'jsonwebtoken'
 const app = express();
 app.use(express.json());
 
-// endpoint local: http://localhost:4000/
-
-// app.get();
-// app.post()
-// app.patch();
-// app.put();
-// app.delete();
-
-app.get('/create-user', (request, response) => {
+app.get('/user/sign-in', (request, response) => {
     const { name, email, password } = request.body;
-    console.log(name, email, password);
     pool.getConnection((err: any, connection: any) => {
 
         const idGenerated = uuidv4();
@@ -26,9 +17,6 @@ app.get('/create-user', (request, response) => {
             if (err) {
                 return response.status(500).json(err);
             }
-
-            console.log(idGenerated);
-            console.log(passwordHash);
 
             connection.query(
                 'INSERT INTO users (user_id, name, email, password) VALUES (?,?,?,?)',
