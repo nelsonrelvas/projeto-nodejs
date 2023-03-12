@@ -25,7 +25,7 @@ class UserRepository {
                         if (error) {
                             response.status(400).json(error);
                         } else {
-                            response.status(200).json({ sucess: true });
+                            response.status(200).json({ message: "Usuário criado com sucesso." });
                         }
                     }
                 );
@@ -59,7 +59,7 @@ class UserRepository {
                                             id: result[0].user_id,
                                             email: result[0].email
                                         }, "segredo", { expiresIn: "1d" });
-                                        return response.status(200).json({ token: token });
+                                        return response.status(200).json({ token: token, message: "Autenticado com sucesso." });
                                     } else {
                                         return response.status(400).json({ error: "Erro na sua autenticação (senha incorreta)!" });
                                     }
