@@ -35,6 +35,7 @@ class UserRepository {
 
     login(request: Request, response: Response) {
         const { email, password } = request.body;
+        console.log("login", email, password);
         pool.getConnection((err: any, connection: any) => {
             connection.query(
                 'SELECT * FROM users WHERE email=?',
@@ -46,7 +47,7 @@ class UserRepository {
                         return response.status(500).json(err);
                     } else {
                         if (!result[0]) {
-                            return response.status(400).json({ error: "Erro na sua autenticação (email não existe)!" });
+                            return response.status(400).json({ error: "Erro na sua autenticação (email não existe)!!!" });
                         } else {
                             //verifica se a senha bate
                             compare(password, result[0].password, (erroCompare: any, resultCompare: any) => {
@@ -60,9 +61,11 @@ class UserRepository {
                                             email: result[0].email
                                         }, process.env.SECRET as string, { expiresIn: "1d" });     //token valido por um dia.
                                         
+                                        console.log("login", token);
+
                                         return response.status(200).json({ token: token, message: "Autenticado com sucesso." });
                                     } else {
-                                        return response.status(400).json({ error: "Erro na sua autenticação (senha incorreta)!" });
+                                        return response.status(400).json({ error: "Erro na sua autenticação (senha incorreta)!!!" });
                                     }
                                 }
                             });
