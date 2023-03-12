@@ -25,11 +25,30 @@ class VideosRepository {
     }
 
     getVideos(request: Request, response: Response) {
-        const { user_id } = request.params;
+        const { user_id } = request.query;
         pool.getConnection((err: any, connection: any) => {
             connection.query(
                 'SELECT * FROM videos WHERE users_user_id=?',
                 [user_id],
+                (error: any, result: any, fields: any) => {
+                    connection.release();
+                    if (error) {
+                        return response.status(500).json(err);
+                    } else {
+                        return response.status(200).json({ message: "Vídeos retornados com sucesso.", videos: result });
+                    }
+                }
+            );
+        });
+    }
+
+    getVideosText(request: Request, response: Response) {
+        let { text } = request.query;
+        text = `%${text}%`;
+        pool.getConnection((err: any, connection: any) => {
+            connection.query(
+                'SELECT * FROM videos WHERE title LIKE ? OR description LIKE ?',
+                [text, text],
                 (error: any, result: any, fields: any) => {
                     connection.release();
                     if (error) {

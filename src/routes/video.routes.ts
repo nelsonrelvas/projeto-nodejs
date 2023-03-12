@@ -8,8 +8,12 @@ videosRoutes.post('/create-video', (request, response) => {
     videosRepository.create(request, response);
 });
 
-videosRoutes.get('/get-video/:user_id', (request, response) => {
+videosRoutes.get('/get-video', (request, response) => {
     videosRepository.getVideos(request, response);
+});
+
+videosRoutes.get('/search', (request, response) => {
+    videosRepository.getVideosText(request, response);
 });
 
 export { videosRoutes };
