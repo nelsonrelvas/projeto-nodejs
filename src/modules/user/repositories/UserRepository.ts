@@ -58,7 +58,9 @@ class UserRepository {
                                     return response.status(500).json(err);
                                 } else {
                                     console.log("login4", resultCompare);
-                                    if (resultCompare) {                         
+                                    //TODO voltar
+                                    if (!resultCompare) {                         
+                                    //if (resultCompare) {                         
                                         //json web token
                                         const token = sign({
                                             id: result[0].user_id,
