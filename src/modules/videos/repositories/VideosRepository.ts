@@ -25,11 +25,11 @@ class VideosRepository {
     }
 
     getVideos(request: Request, response: Response) {
-        const { users_user_id } = request.body;
+        const { user_id } = request.params;
         pool.getConnection((err: any, connection: any) => {
             connection.query(
                 'SELECT * FROM videos WHERE users_user_id=?',
-                [users_user_id],
+                [user_id],
                 (error: any, result: any, fields: any) => {
                     connection.release();
                     if (error) {
