@@ -35,7 +35,7 @@ class UserRepository {
 
     login(request: Request, response: Response) {
         const { email, password } = request.body;
-        console.log("login", email, password);
+        console.log("login1", email, password);
         pool.getConnection((err: any, connection: any) => {
             connection.query(
                 'SELECT * FROM users WHERE email=?',
@@ -49,19 +49,23 @@ class UserRepository {
                         if (!result[0]) {
                             return response.status(400).json({ error: "Erro na sua autenticação (email não existe)!!!" });
                         } else {
+                            console.log("login2", result[0]);
+                            console.log("login3", result[0].password);
+
                             //verifica se a senha bate
                             compare(password, result[0].password, (erroCompare: any, resultCompare: any) => {
                                 if (erroCompare) {
                                     return response.status(500).json(err);
                                 } else {
-                                    if (resultCompare) {
+                                    console.log("login4", resultCompare);
+                                    if (resultCompare) {                         
                                         //json web token
                                         const token = sign({
                                             id: result[0].user_id,
                                             email: result[0].email
                                         }, process.env.SECRET as string, { expiresIn: "1d" });     //token valido por um dia.
                                         
-                                        console.log("login", token);
+                                        console.log("login5", token);
 
                                         return response.status(200).json({ token: token, message: "Autenticado com sucesso." });
                                     } else {
